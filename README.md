@@ -18,4 +18,8 @@ I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Pl
 
 <b>My GitHub Stats</b> :shipit:
 
+<p align="center">
+	<img src="/github-metrics.svg" alt="GitHub Metrics" width="100%" />
+</p>
+
 <a href="http://www.github.com/GiselleLlamas"><img src="https://github-readme-streak-stats.herokuapp.com/?user=GiselleLlamas&stroke=ffffff&background=1c1917&ring=a855f7&fire=a855f7&currStreakNum=ffffff&currStreakLabel=a855f7&sideNums=ffffff&sideLabels=ffffff&dates=ffffff&hide_border=true" /></a>
