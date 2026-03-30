@@ -15,7 +15,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: lowlighter/metrics@latest
+      - name: Generate isometric calendar
+        uses: lowlighter/metrics@latest
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: GiselleLlamas
@@ -26,7 +27,8 @@ jobs:
           plugin_isocalendar: yes
           plugin_isocalendar_duration: full-year
 
-      - uses: lowlighter/metrics@latest
+      - name: Generate starred topics
+        uses: lowlighter/metrics@latest
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: GiselleLlamas
@@ -36,9 +38,10 @@ jobs:
           plugin_topics: yes
           plugin_topics_mode: icons
           plugin_topics_sort: starred
-          plugin_topics_limit: 12
+          plugin_topics_limit: 50
 
-      - uses: lowlighter/metrics@latest
+      - name: Generate coding habits
+        uses: lowlighter/metrics@latest
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: GiselleLlamas
@@ -54,7 +57,8 @@ jobs:
           plugin_habits_charts_type: graph
           plugin_habits_languages_limit: 8
 
-      - uses: lowlighter/metrics@latest
+      - name: Generate 16personalities profile
+        uses: lowlighter/metrics@latest
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: GiselleLlamas
@@ -66,7 +70,8 @@ jobs:
           plugin_16personalities_sections: personality, profile, traits
           plugin_16personalities_scores: yes
 
-      - uses: lowlighter/metrics@latest
+      - name: Generate AniList card
+        uses: lowlighter/metrics@latest
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: GiselleLlamas
