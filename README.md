@@ -22,9 +22,9 @@ I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Pl
 </p>
 
 <p align="center">
-	<img src="/github-metrics-16personalities.svg" alt="16personalities profile" width="100%" />
+	<img src="/github-metrics-16personalities.svg" alt="16personalities profile" width="65%" />
 </p>
 
 <p align="center">
-	<img src="/github-metrics-anilist.svg" alt="AniList activity" width="100%" />
+	<img src="/github-metrics-anilist.svg" alt="AniList activity" width="65%" />
 </p>
