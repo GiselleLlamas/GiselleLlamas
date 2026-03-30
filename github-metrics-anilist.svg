@@ -1,48 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="928" height="510" viewBox="0 0 928 510" role="img" aria-label="AniList showcase card">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="486" viewBox="0 0 800 486" role="img" aria-label="AniList showcase">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f5fbff"/>
-      <stop offset="100%" stop-color="#ecf5ff"/>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f3460"/>
+      <stop offset="100%" stop-color="#162032"/>
     </linearGradient>
   </defs>
-  <rect width="928" height="510" fill="url(#bg)"/>
-  <rect x="16" y="16" width="896" height="478" rx="18" fill="#f9fcff" stroke="#d8e7f5"/>
-  <text x="34" y="54" font-size="30" font-weight="800" fill="#11253d">AniList Showcase</text>
-  <text x="34" y="78" font-size="14" fill="#3b4f67">@ShiningMonster • curated highlights</text>
-  <text x="34" y="102" font-size="12" fill="#5b6e84">AniList public API has intermittent 403 restrictions. This showcase keeps your profile section stable and aesthetic.</text>
-  <rect x="24" y="126" width="430" height="106" rx="14" fill="#ffffff" stroke="#dbe4ee"/>
-  <rect x="36" y="140" width="6" height="24" rx="3" fill="#2f80ed"/>
-  <text x="52" y="158" font-size="15" font-weight="700" fill="#13243a">Anime: Watching</text>
-  <text x="52" y="182" font-size="13" fill="#334155">• Little Witch Academia (TV)</text>
-  <text x="52" y="200" font-size="13" fill="#334155">• Sousou no Frieren 2nd Season</text>
-  <rect x="472" y="126" width="430" height="106" rx="14" fill="#ffffff" stroke="#dbe4ee"/>
-  <rect x="484" y="140" width="6" height="24" rx="3" fill="#17a34a"/>
-  <text x="500" y="158" font-size="15" font-weight="700" fill="#13243a">Anime: Completed Highlights</text>
-  <text x="500" y="182" font-size="13" fill="#334155">• Bubblegum Crisis</text>
-  <text x="500" y="200" font-size="13" fill="#334155">• Bubblegum Crisis TOKYO 2040</text>
-  <text x="500" y="218" font-size="13" fill="#334155">• Dandadan</text>
-  <rect x="24" y="244" width="430" height="106" rx="14" fill="#ffffff" stroke="#dbe4ee"/>
-  <rect x="36" y="258" width="6" height="24" rx="3" fill="#c2410c"/>
-  <text x="52" y="276" font-size="15" font-weight="700" fill="#13243a">Manga: Reading</text>
-  <text x="52" y="300" font-size="13" fill="#334155">• Dandadan</text>
-  <text x="52" y="318" font-size="13" fill="#334155">• Berserk</text>
-  <text x="52" y="336" font-size="13" fill="#334155">• X</text>
-  <rect x="472" y="244" width="430" height="106" rx="14" fill="#ffffff" stroke="#dbe4ee"/>
-  <rect x="484" y="258" width="6" height="24" rx="3" fill="#7c3aed"/>
-  <text x="500" y="276" font-size="15" font-weight="700" fill="#13243a">Manga: Completed Highlights</text>
-  <text x="500" y="300" font-size="13" fill="#334155">• Denei Shoujo</text>
-  <text x="500" y="318" font-size="13" fill="#334155">• Tokyo BABYLON</text>
-  <text x="500" y="336" font-size="13" fill="#334155">• Silent Mobius</text>
-  <rect x="24" y="362" width="430" height="106" rx="14" fill="#ffffff" stroke="#dbe4ee"/>
-  <rect x="36" y="376" width="6" height="24" rx="3" fill="#0ea5a3"/>
-  <text x="52" y="394" font-size="15" font-weight="700" fill="#13243a">Recent Activity Signals</text>
-  <text x="52" y="418" font-size="13" fill="#334155">• Completed Matantei Loki Ragnarok</text>
-  <text x="52" y="436" font-size="13" fill="#334155">• Completed Matantei Loki</text>
-  <text x="52" y="454" font-size="13" fill="#334155">• Completed Bubblegum Crisis TOKYO 2040</text>
-  <a href="https://anilist.co/user/ShiningMonster/" target="_blank" rel="noopener noreferrer">
-    <rect x="698" y="384" width="198" height="46" rx="12" fill="#11253d"/>
-    <text x="797" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Open AniList Profile</text>
-  </a>
-  <text x="34" y="478" font-size="11" fill="#7990a8">Updated by GitHub Actions • static fallback mode for reliability</text>
+  <rect width="800" height="486" rx="16" fill="#0d1b2a"/>
+  <rect width="800" height="76" rx="16" fill="url(#hdr)"/>
+  <rect y="68" width="800" height="8" fill="#0d1b2a"/>
+  <text x="18" y="36" font-size="22" font-weight="800" fill="#f0f9ff">AniList Showcase</text>
+  <text x="18" y="60" font-size="13" fill="#7dd3fc">@ShiningMonster · curated highlights · anilist.co/user/ShiningMonster</text>
+  <rect x="18" y="86" width="375" height="96" rx="10" fill="#162032"/>
+  <rect x="19" y="86" width="373" height="36" rx="9" fill="#38bdf81a"/>
+  <circle cx="33" cy="104" r="5" fill="#38bdf8"/>
+  <text x="47" y="109" font-size="13" font-weight="700" fill="#38bdf8">Watching</text>
+  <text x="33" y="146" font-size="12" fill="#334155">›</text>
+  <text x="45" y="146" font-size="12" fill="#94a3b8">Little Witch Academia (TV)</text>
+  <text x="33" y="166" font-size="12" fill="#334155">›</text>
+  <text x="45" y="166" font-size="12" fill="#94a3b8">Sousou no Frieren 2nd Season</text>
+  <rect x="407" y="86" width="375" height="116" rx="10" fill="#162032"/>
+  <rect x="408" y="86" width="373" height="36" rx="9" fill="#34d3991a"/>
+  <circle cx="422" cy="104" r="5" fill="#34d399"/>
+  <text x="436" y="109" font-size="13" font-weight="700" fill="#34d399">Anime · Completed</text>
+  <text x="422" y="146" font-size="12" fill="#334155">›</text>
+  <text x="434" y="146" font-size="12" fill="#94a3b8">Bubblegum Crisis</text>
+  <text x="422" y="166" font-size="12" fill="#334155">›</text>
+  <text x="434" y="166" font-size="12" fill="#94a3b8">Bubblegum Crisis TOKYO 2040</text>
+  <text x="422" y="186" font-size="12" fill="#334155">›</text>
+  <text x="434" y="186" font-size="12" fill="#94a3b8">Dandadan</text>
+  <rect x="18" y="212" width="375" height="116" rx="10" fill="#162032"/>
+  <rect x="19" y="212" width="373" height="36" rx="9" fill="#f973161a"/>
+  <circle cx="33" cy="230" r="5" fill="#f97316"/>
+  <text x="47" y="235" font-size="13" font-weight="700" fill="#f97316">Manga · Reading</text>
+  <text x="33" y="272" font-size="12" fill="#334155">›</text>
+  <text x="45" y="272" font-size="12" fill="#94a3b8">Dandadan</text>
+  <text x="33" y="292" font-size="12" fill="#334155">›</text>
+  <text x="45" y="292" font-size="12" fill="#94a3b8">Berserk</text>
+  <text x="33" y="312" font-size="12" fill="#334155">›</text>
+  <text x="45" y="312" font-size="12" fill="#94a3b8">X</text>
+  <rect x="407" y="212" width="375" height="116" rx="10" fill="#162032"/>
+  <rect x="408" y="212" width="373" height="36" rx="9" fill="#a78bfa1a"/>
+  <circle cx="422" cy="230" r="5" fill="#a78bfa"/>
+  <text x="436" y="235" font-size="13" font-weight="700" fill="#a78bfa">Manga · Completed</text>
+  <text x="422" y="272" font-size="12" fill="#334155">›</text>
+  <text x="434" y="272" font-size="12" fill="#94a3b8">Denei Shoujo</text>
+  <text x="422" y="292" font-size="12" fill="#334155">›</text>
+  <text x="434" y="292" font-size="12" fill="#94a3b8">Tokyo BABYLON</text>
+  <text x="422" y="312" font-size="12" fill="#334155">›</text>
+  <text x="434" y="312" font-size="12" fill="#94a3b8">Silent Möbius</text>
+  <rect x="18" y="338" width="764" height="116" rx="10" fill="#162032"/>
+  <rect x="19" y="338" width="762" height="36" rx="9" fill="#fb71851a"/>
+  <circle cx="33" cy="356" r="5" fill="#fb7185"/>
+  <text x="47" y="361" font-size="13" font-weight="700" fill="#fb7185">Recent Activity</text>
+  <text x="33" y="398" font-size="12" fill="#334155">›</text>
+  <text x="45" y="398" font-size="12" fill="#94a3b8">Completed Matantei Loki Ragnarok</text>
+  <text x="33" y="418" font-size="12" fill="#334155">›</text>
+  <text x="45" y="418" font-size="12" fill="#94a3b8">Completed Matantei Loki</text>
+  <text x="33" y="438" font-size="12" fill="#334155">›</text>
+  <text x="45" y="438" font-size="12" fill="#94a3b8">Completed Bubblegum Crisis TOKYO 2040</text>
+  <text x="400" y="478" text-anchor="middle" font-size="10" fill="#1e3a5f">updated by GitHub Actions · static showcase</text>
 </svg>

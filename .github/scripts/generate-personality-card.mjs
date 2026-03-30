@@ -1,96 +1,94 @@
-import fs from "node:fs/promises";
+﻿import fs from "node:fs/promises";
 
 const OUT_FILE = process.env.PERSONALITY_SVG || "github-metrics-16personalities.svg";
 
-const profile = {
-  owner: "Giselle",
-  type: "INTJ-T",
-  label: "Architect",
-  traits: [
-    { name: "Mind", value: "89% Intuitive" },
-    { name: "Tactics", value: "90% Judging" },
-    { name: "Energy", value: "71% Introverted" },
-    { name: "Nature", value: "61% Thinking" },
-    { name: "Identity", value: "51% balanced" },
-  ],
-  highlights: [
-    "Top strengths: 90% Judging and 89% Intuitive",
-    "Vision + pragmatism in one profile",
-    "Strategic, systems-first problem solving",
-    "Independent builder with high standards",
-    "High-structure planning with strong pattern recognition",
-  ],
-  quote:
-    "Thought constitutes the greatness of man. Man is a reed, the feeblest thing in nature, but he is a thinking reed.",
-};
+const W = 800;
+const HEADER_H = 78;
 
-function escapeXml(text) {
-  return `${text || ""}`
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&apos;");
-}
+const TRAITS = [
+  { name: "Tactics",  sub: "Judging",     pct: 90, color: "#6366f1" },
+  { name: "Mind",     sub: "Intuitive",   pct: 89, color: "#8b5cf6" },
+  { name: "Energy",   sub: "Introverted", pct: 71, color: "#0ea5e9" },
+  { name: "Nature",   sub: "Thinking",    pct: 61, color: "#10b981" },
+  { name: "Identity", sub: "Balanced",    pct: 51, color: "#f59e0b" },
+];
 
-function traitLine(index, name, value) {
-  const y = 146 + index * 34;
-  return `\n  <text x="46" y="${y}" font-size="13" fill="#1f2a44"><tspan font-weight="700">${escapeXml(name)}:</tspan> ${escapeXml(value)}</text>`;
-}
+const STRENGTHS = [
+  "Vision-driven systems thinker",
+  "High-structure planning & execution",
+  "Pattern recognition & intuitive leaps",
+  "Independent builder with high standards",
+];
 
-function highlightLine(index, value) {
-  const y = 158 + index * 30;
-  return `\n  <text x="492" y="${y}" font-size="13" fill="#3b4f67">• ${escapeXml(value)}</text>`;
+const QUOTE1 = "Man is a reed, the feeblest thing in nature \u2014";
+const QUOTE2 = "but he is a thinking reed.  \u2014 Blaise Pascal";
+
+const BAR_W = 250;
+const TRAIT_STEP = 38;
+const TRAITS_Y = HEADER_H + 30;
+
+function esc(t) {
+  return String(t ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function generateSvg() {
-  const width = 928;
-  const height = 430;
-  let body = "";
+  const RP_X = 398;
+  const RP_W = W - RP_X - 18;
+  const RP_Y = HEADER_H + 14;
+  const traitEnd = TRAITS_Y + TRAITS.length * TRAIT_STEP;
+  const H = Math.max(traitEnd + 36, RP_Y + 260 + 36);
 
-  body += `\n  <defs>
-    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#fef9f2"/>
-      <stop offset="100%" stop-color="#f6efe3"/>
+  let body = `  <defs>
+    <linearGradient id="intj" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
     </linearGradient>
-  </defs>`;
-  body += `\n  <rect width="${width}" height="${height}" fill="#fffdfa"/>`;
-  body += `\n  <rect x="16" y="16" width="${width - 32}" height="${height - 32}" rx="18" fill="url(#panel)" stroke="#eadfcf"/>`;
+  </defs>
+  <rect width="${W}" height="${H}" rx="16" fill="#fafafa" stroke="#e5e7eb"/>
+  <rect width="${W}" height="${HEADER_H}" rx="16" fill="url(#intj)"/>
+  <rect y="${HEADER_H - 8}" width="${W}" height="8" fill="#fafafa"/>
+  <text x="18" y="38" font-size="22" font-weight="800" fill="#ffffff">Personality Snapshot</text>
+  <text x="18" y="62" font-size="13" fill="#c4b5fd">Giselle \u00B7 Architect \u00B7 INTJ-T</text>
+  <text x="${W - 18}" y="62" text-anchor="end" font-size="12" font-weight="700" fill="#e0e7ff">90% Judging \u00B7 89% Intuitive</text>
+  <text x="18" y="${TRAITS_Y - 8}" font-size="10" font-weight="700" fill="#6b7280" letter-spacing="1.5">TRAIT BREAKDOWN</text>`;
 
-  body += `\n  <text x="36" y="58" font-size="30" font-weight="800" fill="#3a2f21">Personality Snapshot</text>`;
-  body += `\n  <text x="36" y="84" font-size="14" fill="#6b5d4b">${escapeXml(profile.owner)} • ${escapeXml(profile.label)} (${escapeXml(profile.type)})</text>`;
-  body += `\n  <text x="36" y="102" font-size="13" font-weight="700" fill="#3a2f21">Employer-facing strengths: 90% Judging • 89% Intuitive</text>`;
-
-  body += `\n  <rect x="32" y="108" width="404" height="266" rx="14" fill="#ffffff" stroke="#eadfcf"/>`;
-  body += `\n  <text x="46" y="132" font-size="16" font-weight="700" fill="#3a2f21">Trait Breakdown</text>`;
-  for (let i = 0; i < profile.traits.length; i += 1) {
-    body += traitLine(i, profile.traits[i].name, profile.traits[i].value);
+  for (let i = 0; i < TRAITS.length; i++) {
+    const ty = TRAITS_Y + i * TRAIT_STEP;
+    const fill = Math.round(BAR_W * TRAITS[i].pct / 100);
+    body += `
+  <text x="18" y="${ty + 12}" font-size="12" font-weight="700" fill="#374151">${esc(TRAITS[i].name)}</text>
+  <text x="90" y="${ty + 12}" font-size="12" fill="#9ca3af">${esc(TRAITS[i].sub)}</text>
+  <rect x="18" y="${ty + 17}" width="${BAR_W}" height="9" rx="4.5" fill="#e9ecf0"/>
+  <rect x="18" y="${ty + 17}" width="${fill}" height="9" rx="4.5" fill="${TRAITS[i].color}"/>
+  <text x="${18 + BAR_W + 8}" y="${ty + 25}" font-size="11" font-weight="700" fill="${TRAITS[i].color}">${TRAITS[i].pct}%</text>`;
   }
 
-  body += `\n  <rect x="456" y="108" width="440" height="266" rx="14" fill="#ffffff" stroke="#eadfcf"/>`;
-  body += `\n  <text x="472" y="132" font-size="16" font-weight="700" fill="#3a2f21">Interesting Tidbits</text>`;
-  for (let i = 0; i < profile.highlights.length; i += 1) {
-    body += highlightLine(i, profile.highlights[i]);
+  const rpH = H - RP_Y - 26;
+  body += `
+  <rect x="${RP_X}" y="${RP_Y}" width="${RP_W}" height="${rpH}" rx="12" fill="#f0f2ff" stroke="#dde1f7"/>
+  <text x="${RP_X + 18}" y="${RP_Y + 20}" font-size="10" font-weight="700" fill="#6b7280" letter-spacing="1.5">KEY STRENGTHS</text>`;
+
+  for (let i = 0; i < STRENGTHS.length; i++) {
+    const sy = RP_Y + 38 + i * 36;
+    body += `
+  <circle cx="${RP_X + 18}" cy="${sy - 4}" r="3.5" fill="#6366f1"/>
+  <text x="${RP_X + 30}" y="${sy}" font-size="12.5" fill="#1e1b4b">${esc(STRENGTHS[i])}</text>`;
   }
 
-  body += `\n  <text x="472" y="294" font-size="12" fill="#6b5d4b">${escapeXml(profile.quote)}</text>`;
-  body += `\n  <a href="https://www.16personalities.com/profiles/f210f18446ae3" target="_blank" rel="noopener noreferrer">
-    <rect x="650" y="326" width="226" height="38" rx="10" fill="#3a2f21"/>
-    <text x="763" y="350" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Open Full 16Personalities Profile</text>
-  </a>`;
+  const qy = RP_Y + 38 + STRENGTHS.length * 36 + 12;
+  body += `
+  <line x1="${RP_X + 14}" y1="${qy}" x2="${RP_X + RP_W - 14}" y2="${qy}" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="${RP_X + 18}" y="${qy + 18}" font-size="11" font-style="italic" fill="#4338ca">${esc(QUOTE1)}</text>
+  <text x="${RP_X + 18}" y="${qy + 33}" font-size="11" font-style="italic" fill="#6366f1">${esc(QUOTE2)}</text>
+  <text x="${W / 2}" y="${H - 10}" text-anchor="middle" font-size="10" fill="#9ca3af">16personalities.com/profiles/f210f18446ae3 \u00B7 updated by GitHub Actions</text>`;
 
-  body += `\n  <text x="36" y="398" font-size="11" fill="#8a7963">Resilient fallback card so this section always renders even if plugin scraping breaks.</text>`;
-
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="16Personalities showcase card">${body}\n</svg>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="16Personalities Personality Snapshot">\n${body}\n</svg>`;
 }
 
 async function main() {
   const svg = generateSvg();
   await fs.writeFile(OUT_FILE, `${svg}\n`, "utf8");
-  console.log(`16Personalities fallback card generated: ${OUT_FILE}`);
+  console.log(`16P card written: ${OUT_FILE}`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+main().catch((err) => { console.error(err); process.exit(1); });

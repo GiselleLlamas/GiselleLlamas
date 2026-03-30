@@ -14,9 +14,13 @@ I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Pl
 </p>
 
 <p align="center">
-	<img src="/github-metrics-anilist.svg" alt="AniList showcase" width="96%" />
+  <a href="https://anilist.co/user/ShiningMonster/" target="_blank" rel="noopener">
+    <img src="/github-metrics-anilist.svg" alt="AniList showcase" width="96%" />
+  </a>
 </p>
 
 <p align="center">
-	<img src="/github-metrics-16personalities.svg" alt="16Personalities showcase" width="96%" />
+  <a href="https://www.16personalities.com/profiles/f210f18446ae3" target="_blank" rel="noopener">
+    <img src="/github-metrics-16personalities.svg" alt="16Personalities showcase" width="96%" />
+  </a>
 </p>

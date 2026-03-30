@@ -1,99 +1,87 @@
-import fs from "node:fs/promises";
+﻿import fs from "node:fs/promises";
 
 const USER = process.env.ANILIST_USER || "ShiningMonster";
 const OUT_FILE = process.env.ANILIST_SVG || "github-metrics-anilist.svg";
 
-const DATA = {
-  watching: [
-    "Little Witch Academia (TV)",
-    "Sousou no Frieren 2nd Season",
-  ],
-  completedAnime: [
-    "Bubblegum Crisis",
-    "Bubblegum Crisis TOKYO 2040",
-    "Dandadan",
-    "Dungeon Meshi",
-  ],
-  readingManga: [
-    "Dandadan",
-    "Berserk",
-    "X",
-  ],
-  completedManga: [
-    "Denei Shoujo",
-    "Tokyo BABYLON",
-    "Silent Mobius",
-    "Shin Seiki Evangelion",
-  ],
-  recentActivity: [
-    "Completed Matantei Loki Ragnarok",
-    "Completed Matantei Loki",
-    "Completed Bubblegum Crisis TOKYO 2040",
-    "Completed Bubblegum Crisis",
-  ],
-  note:
-    "AniList public API has intermittent 403 restrictions. This showcase keeps your profile section stable and aesthetic.",
-};
+const SECTIONS = [
+  { title: "Watching",          items: ["Little Witch Academia (TV)", "Sousou no Frieren 2nd Season"],                                     color: "#38bdf8" },
+  { title: "Anime \u00B7 Completed", items: ["Bubblegum Crisis", "Bubblegum Crisis TOKYO 2040", "Dandadan"],                              color: "#34d399" },
+  { title: "Manga \u00B7 Reading",   items: ["Dandadan", "Berserk", "X"],                                                                 color: "#f97316" },
+  { title: "Manga \u00B7 Completed", items: ["Denei Shoujo", "Tokyo BABYLON", "Silent M\u00F6bius"],                                     color: "#a78bfa" },
+  { title: "Recent Activity",   items: ["Completed Matantei Loki Ragnarok", "Completed Matantei Loki", "Completed Bubblegum Crisis TOKYO 2040"], color: "#fb7185", wide: true },
+];
 
-function escapeXml(text) {
-  return `${text || ""}`
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+const W = 800;
+const PAD = 18;
+const COL_GAP = 14;
+const COL_W = Math.floor((W - PAD * 2 - COL_GAP) / 2);
+const ITEM_H = 20;
+const SEC_HDR = 36;
+const SEC_PAD = 10;
+
+function esc(t) {
+  return String(t ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function listBlock(x, y, title, items, color) {
-  let out = `\n  <rect x="${x}" y="${y}" width="430" height="106" rx="14" fill="#ffffff" stroke="#dbe4ee"/>`;
-  out += `\n  <rect x="${x + 12}" y="${y + 14}" width="6" height="24" rx="3" fill="${color}"/>`;
-  out += `\n  <text x="${x + 28}" y="${y + 32}" font-size="15" font-weight="700" fill="#13243a">${escapeXml(title)}</text>`;
-  for (let i = 0; i < Math.min(items.length, 3); i += 1) {
-    out += `\n  <text x="${x + 28}" y="${y + 56 + i * 18}" font-size="13" fill="#334155">• ${escapeXml(items[i])}</text>`;
+function sectionCard(x, y, w, { title, items, color }) {
+  const h = SEC_HDR + SEC_PAD + items.length * ITEM_H + SEC_PAD;
+  let s = `\n  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#162032"/>`;
+  s += `\n  <rect x="${x + 1}" y="${y}" width="${w - 2}" height="${SEC_HDR}" rx="9" fill="${color}1a"/>`;
+  s += `\n  <circle cx="${x + 15}" cy="${y + Math.round(SEC_HDR / 2)}" r="5" fill="${color}"/>`;
+  s += `\n  <text x="${x + 29}" y="${y + Math.round(SEC_HDR / 2) + 5}" font-size="13" font-weight="700" fill="${color}">${esc(title)}</text>`;
+  const baseY = y + SEC_HDR + SEC_PAD;
+  for (let i = 0; i < items.length; i++) {
+    const ty = baseY + i * ITEM_H + 14;
+    s += `\n  <text x="${x + 15}" y="${ty}" font-size="12" fill="#334155">\u203A</text>`;
+    s += `\n  <text x="${x + 27}" y="${ty}" font-size="12" fill="#94a3b8">${esc(items[i])}</text>`;
   }
-  return out;
+  return { svg: s, h };
 }
 
 function generateSvg() {
-  const width = 928;
-  const height = 510;
+  const HEADER_H = 76;
+  let y = HEADER_H + 10;
+  const parts = [];
 
-  let body = "";
-  body += `\n  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f5fbff"/>
-      <stop offset="100%" stop-color="#ecf5ff"/>
+  const r1l = sectionCard(PAD, y, COL_W, SECTIONS[0]);
+  const r1r = sectionCard(PAD + COL_W + COL_GAP, y, COL_W, SECTIONS[1]);
+  parts.push(r1l, r1r);
+  y += Math.max(r1l.h, r1r.h) + 10;
+
+  const r2l = sectionCard(PAD, y, COL_W, SECTIONS[2]);
+  const r2r = sectionCard(PAD + COL_W + COL_GAP, y, COL_W, SECTIONS[3]);
+  parts.push(r2l, r2r);
+  y += Math.max(r2l.h, r2r.h) + 10;
+
+  const r3 = sectionCard(PAD, y, W - PAD * 2, SECTIONS[4]);
+  parts.push(r3);
+  y += r3.h + 10;
+
+  const H = y + 22;
+
+  let out = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="AniList showcase">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f3460"/>
+      <stop offset="100%" stop-color="#162032"/>
     </linearGradient>
-  </defs>`;
-
-  body += `\n  <rect width="${width}" height="${height}" fill="url(#bg)"/>`;
-  body += `\n  <rect x="16" y="16" width="${width - 32}" height="${height - 32}" rx="18" fill="#f9fcff" stroke="#d8e7f5"/>`;
-  body += `\n  <text x="34" y="54" font-size="30" font-weight="800" fill="#11253d">AniList Showcase</text>`;
-  body += `\n  <text x="34" y="78" font-size="14" fill="#3b4f67">@${escapeXml(USER)} • curated highlights</text>`;
-  body += `\n  <text x="34" y="102" font-size="12" fill="#5b6e84">${escapeXml(DATA.note)}</text>`;
-
-  body += listBlock(24, 126, "Anime: Watching", DATA.watching, "#2f80ed");
-  body += listBlock(472, 126, "Anime: Completed Highlights", DATA.completedAnime, "#17a34a");
-  body += listBlock(24, 244, "Manga: Reading", DATA.readingManga, "#c2410c");
-  body += listBlock(472, 244, "Manga: Completed Highlights", DATA.completedManga, "#7c3aed");
-  body += listBlock(24, 362, "Recent Activity Signals", DATA.recentActivity, "#0ea5a3");
-
-  body += `\n  <a href="https://anilist.co/user/${escapeXml(USER)}/" target="_blank" rel="noopener noreferrer">
-    <rect x="698" y="384" width="198" height="46" rx="12" fill="#11253d"/>
-    <text x="797" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Open AniList Profile</text>
-  </a>`;
-  body += `\n  <text x="34" y="478" font-size="11" fill="#7990a8">Updated by GitHub Actions • static fallback mode for reliability</text>`;
-
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="AniList showcase card">${body}\n</svg>`;
+  </defs>
+  <rect width="${W}" height="${H}" rx="16" fill="#0d1b2a"/>
+  <rect width="${W}" height="${HEADER_H}" rx="16" fill="url(#hdr)"/>
+  <rect y="${HEADER_H - 8}" width="${W}" height="8" fill="#0d1b2a"/>
+  <text x="${PAD}" y="36" font-size="22" font-weight="800" fill="#f0f9ff">AniList Showcase</text>
+  <text x="${PAD}" y="60" font-size="13" fill="#7dd3fc">@${esc(USER)} \u00B7 curated highlights \u00B7 anilist.co/user/${esc(USER)}</text>`;
+  for (const p of parts) out += p.svg;
+  out += `\n  <text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="10" fill="#1e3a5f">updated by GitHub Actions \u00B7 static showcase</text>`;
+  out += "\n</svg>";
+  return out;
 }
 
 async function main() {
   const svg = generateSvg();
   await fs.writeFile(OUT_FILE, `${svg}\n`, "utf8");
-  console.log(`AniList fallback card generated: ${OUT_FILE}`);
+  console.log(`AniList card written: ${OUT_FILE}`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+main().catch((err) => { console.error(err); process.exit(1); });
