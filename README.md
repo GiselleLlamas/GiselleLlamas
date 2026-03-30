@@ -10,21 +10,13 @@ I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Pl
 ----
 
 <p align="center">
-	<img src="/github-metrics-isocalendar.svg" alt="Isometric commit calendar" width="100%" />
+	<img src="/github-metrics.svg" alt="GitHub metrics" width="100%" />
 </p>
 
 <p align="center">
-	<img src="/github-metrics-topics.svg" alt="Starred topics" width="100%" />
+	<img src="/github-metrics-anilist.svg" alt="AniList showcase" width="96%" />
 </p>
 
 <p align="center">
-	<img src="/github-metrics-habits.svg" alt="Coding habits and activity" width="100%" />
-</p>
-
-<p align="center">
-	<img src="/github-metrics-16personalities.svg" alt="16personalities profile" width="65%" />
-</p>
-
-<p align="center">
-	<img src="/github-metrics-anilist.svg" alt="AniList activity" width="65%" />
+	<img src="/github-metrics-16personalities.svg" alt="16Personalities showcase" width="96%" />
 </p>
