@@ -15,10 +15,45 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Generate unified metrics card
-        id: main
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate unified metrics card (primary)
+        id: main_primary
         continue-on-error: true
-        uses: lowlighter/metrics@latest
+        uses: lowlighter/metrics@v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: GiselleLlamas
+          filename: github-metrics.svg
+          template: classic
+          base: header, community
+          config_timezone: America/Argentina/Buenos_Aires
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
+          plugin_topics: yes
+          plugin_topics_mode: icons
+          plugin_topics_sort: starred
+          plugin_topics_limit: 50
+          plugin_activity: yes
+          plugin_activity_limit: 8
+          plugin_activity_days: 30
+          plugin_activity_filter: push
+          plugin_languages: yes
+          plugin_languages_limit: 8
+          plugin_languages_sections: most-used
+          config_order: base.header, isocalendar, topics, base.community, activity, languages
+
+      - name: Retry unified metrics card (fallback)
+        id: main_retry
+        if: steps.main_primary.outcome != 'success'
+        continue-on-error: true
+        uses: lowlighter/metrics@v3.33
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: GiselleLlamas
@@ -42,7 +77,7 @@ jobs:
           config_order: base.header, isocalendar, topics, base.community, activity, languages
 
       - name: Hide unified metrics card when generation fails
-        if: steps.main.outcome != 'success'
+        if: steps.main_primary.outcome != 'success' && steps.main_retry.outcome != 'success'
         run: |
           cat > github-metrics.svg <<'SVG'
           <svg xmlns="http://www.w3.org/2000/svg" width="928" height="1" viewBox="0 0 928 1" role="img" aria-label="Metrics unavailable">
@@ -51,12 +86,47 @@ jobs:
           SVG
 
       - name: Generate AniList fallback showcase card
+        id: anilist_card
+        continue-on-error: true
         run: node .github/scripts/generate-anilist-card.mjs
         env:
           ANILIST_USER: ShiningMonster
           ANILIST_SVG: github-metrics-anilist.svg
 
+      - name: Hide AniList fallback card when generation fails
+        if: steps.anilist_card.outcome != 'success'
+        run: |
+          cat > github-metrics-anilist.svg <<'SVG'
+          <svg xmlns="http://www.w3.org/2000/svg" width="928" height="1" viewBox="0 0 928 1" role="img" aria-label="AniList showcase unavailable">
+            <rect width="928" height="1" fill="transparent" />
+          </svg>
+          SVG
+
       - name: Generate 16Personalities fallback showcase card
+        id: personality_card
+        continue-on-error: true
         run: node .github/scripts/generate-personality-card.mjs
         env:
           PERSONALITY_SVG: github-metrics-16personalities.svg
+
+      - name: Hide 16Personalities fallback card when generation fails
+        if: steps.personality_card.outcome != 'success'
+        run: |
+          cat > github-metrics-16personalities.svg <<'SVG'
+          <svg xmlns="http://www.w3.org/2000/svg" width="928" height="1" viewBox="0 0 928 1" role="img" aria-label="16Personalities showcase unavailable">
+            <rect width="928" height="1" fill="transparent" />
+          </svg>
+          SVG
+
+      - name: Commit generated cards
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add github-metrics.svg github-metrics-anilist.svg github-metrics-16personalities.svg
+          if git diff --cached --quiet; then
+            echo "No card updates to commit"
+          else
+            git commit -m "chore: update profile cards [skip ci]"
+            git push
+          fi
