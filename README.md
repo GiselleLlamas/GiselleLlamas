@@ -3,7 +3,7 @@
 I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Playwright. I also work as an Interactive Developer focusing on Web and C++/OpenFrameworks/P5JS. I'm a EU Citizen/Canada PR.
 
 *   🌍  I'm based in Canada/Argentina
-*   🖥️  See my portfolio at [My Github Portfolio](http://github.com/GiselleLlamas)
+*   🖥️  My personal Dev/QA CV website [in Spanish](https://gisellellamas.dev/)
 *   🚀  I'm currently working on [Little Big Pad (Avatar Studio)](http://www.littlebigpad.app/)
 *   🧠  I'm currently learning Python, 3D and Shaders
 <p align="left">
