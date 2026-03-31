@@ -109,37 +109,26 @@ const PAD = 18;
 const HEADER_H = 52;
 const COL_GAP = 14;
 const COL_W = Math.floor((W - PAD * 2 - COL_GAP) / 2);
-const CARD_H = 96;
+const CARD_H = 116;
 
 function truncate(text, max) {
   if (text.length <= max) return text;
   return `${text.slice(0, max - 1)}...`;
 }
 
-function wrapText(text, maxChars, maxLines) {
-  const words = `${text || ""}`.split(/\s+/);
-  const lines = [];
-  let current = "";
-  for (const word of words) {
-    const next = current ? `${current} ${word}` : word;
-    if (next.length <= maxChars) {
-      current = next;
-      continue;
-    }
-    if (current) lines.push(current);
-    current = word;
-    if (lines.length === maxLines - 1) break;
+function descriptionLinesWithEllipsis(text, firstMax, secondMax) {
+  const clean = `${text || ""}`.replace(/\s+/g, " ").trim();
+  if (!clean) return ["", ""];
+
+  const first = clean.slice(0, firstMax).trimEnd();
+  const remaining = clean.slice(first.length).trimStart();
+  if (!remaining) return [first, ""];
+
+  if (remaining.length <= secondMax) {
+    return [first, remaining];
   }
-  if (lines.length < maxLines && current) {
-    lines.push(current);
-  }
-  if (lines.length > maxLines) {
-    return lines.slice(0, maxLines);
-  }
-  if (words.join(" ").length > lines.join(" ").length && lines.length) {
-    lines[lines.length - 1] = truncate(lines[lines.length - 1], maxChars);
-  }
-  return lines;
+
+  return [first, `${remaining.slice(0, Math.max(0, secondMax - 3)).trimEnd()}...`];
 }
 
 function esc(t) {
@@ -157,23 +146,25 @@ async function imageToDataUri(url) {
 }
 
 function renderFavorite(x, y, favorite) {
-  const descriptionLines = wrapText(favorite.description, 24, 2);
+  const descriptionLines = descriptionLinesWithEllipsis(favorite.description, 28, 29);
+  const compactMeta = truncate(
+    `${favorite.medium} · ${favorite.year} · ${favorite.approval} · ${favorite.episodes.replace(" episodes", " ep")}`,
+    36,
+  );
+  const compactGenres = truncate(favorite.genres, 33);
   let section = `\n  <rect x="${x}" y="${y}" width="${COL_W}" height="${CARD_H}" rx="12" fill="#131c2b" stroke="#1f2b42"/>`;
-  section += `\n  <rect x="${x + 10}" y="${y + 10}" width="40" height="58" rx="7" fill="#0b1220"/>`;
-  section += `\n  <image href="${favorite.coverData}" x="${x + 10}" y="${y + 10}" width="40" height="58" preserveAspectRatio="xMidYMid slice"/>`;
-  section += `\n  <text x="${x + 58}" y="${y + 24}" font-size="13.5" font-weight="700" fill="${favorite.accent}">${esc(truncate(favorite.title, 20))}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 41}" font-size="11.5" fill="#cbd5e1">${esc(favorite.medium)}</text>`;
-  section += `\n  <text x="${x + 102}" y="${y + 41}" font-size="11.5" fill="#64748b">${esc(favorite.year)}</text>`;
-  section += `\n  <text x="${x + 135}" y="${y + 41}" font-size="11.5" fill="#94a3b8">${esc(favorite.approval)}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 56}" font-size="11.5" fill="#94a3b8">${esc(truncate(favorite.episodes, 13))}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 70}" font-size="11" fill="#94a3b8">${esc(truncate(favorite.genres, 22))}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 84}" font-size="10.8" fill="#e2e8f0">${esc(descriptionLines[0] || "")}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 94}" font-size="10.8" fill="#94a3b8">${esc(descriptionLines[1] || "")}</text>`;
+  section += `\n  <rect x="${x + 10}" y="${y + 10}" width="52" height="78" rx="7" fill="#0b1220"/>`;
+  section += `\n  <image href="${favorite.coverData}" x="${x + 10}" y="${y + 10}" width="52" height="78" preserveAspectRatio="xMidYMid slice"/>`;
+  section += `\n  <text x="${x + 68}" y="${y + 27}" font-size="17.5" font-weight="700" fill="${favorite.accent}">${esc(truncate(favorite.title, 22))}</text>`;
+  section += `\n  <text x="${x + 68}" y="${y + 47}" font-size="13.8" fill="#cbd5e1">${esc(compactMeta)}</text>`;
+  section += `\n  <text x="${x + 68}" y="${y + 65}" font-size="13" fill="#94a3b8">${esc(compactGenres)}</text>`;
+  section += `\n  <text x="${x + 68}" y="${y + 85}" font-size="12.5" fill="#e2e8f0">${esc(descriptionLines[0] || "")}</text>`;
+  section += `\n  <text x="${x + 68}" y="${y + 102}" font-size="12.5" fill="#94a3b8">${esc(descriptionLines[1] || "")}</text>`;
   return section;
 }
 
 function generateSvg(animeFavorites, mangaFavorites) {
-  const H = 554;
+  const H = 642;
   let out = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="AniList favorites showcase">
   <defs>
@@ -183,16 +174,16 @@ function generateSvg(animeFavorites, mangaFavorites) {
     </linearGradient>
   </defs>
   <rect width="${W}" height="${H}" rx="16" fill="url(#panel)"/>
-  <text x="${PAD}" y="34" font-size="20" font-weight="700" fill="#e2e8f0">AniList</text>
-  <text x="${PAD}" y="55" font-size="13" fill="#60a5fa">@${esc(USER)}</text>
-  <text x="${PAD}" y="88" font-size="15" font-weight="700" fill="#60a5fa">Favorite anime</text>
-  <text x="${PAD + COL_W + COL_GAP}" y="88" font-size="15" font-weight="700" fill="#f472b6">Favorite manga</text>`;
+  <text x="${PAD}" y="38" font-size="24" font-weight="700" fill="#e2e8f0">AniList</text>
+  <text x="${PAD}" y="62" font-size="15" fill="#60a5fa">@${esc(USER)}</text>
+  <text x="${PAD}" y="98" font-size="19" font-weight="700" fill="#60a5fa">Favorite anime</text>
+  <text x="${PAD + COL_W + COL_GAP}" y="98" font-size="19" font-weight="700" fill="#f472b6">Favorite manga</text>`;
 
   for (let i = 0; i < animeFavorites.length; i += 1) {
-    out += renderFavorite(PAD, 104 + i * 108, animeFavorites[i]);
+    out += renderFavorite(PAD, 116 + i * 128, animeFavorites[i]);
   }
   for (let i = 0; i < mangaFavorites.length; i += 1) {
-    out += renderFavorite(PAD + COL_W + COL_GAP, 104 + i * 108, mangaFavorites[i]);
+    out += renderFavorite(PAD + COL_W + COL_GAP, 116 + i * 128, mangaFavorites[i]);
   }
   out += "\n</svg>";
   return out;
