@@ -39,7 +39,7 @@ jobs:
           plugin_topics: yes
           plugin_topics_mode: icons
           plugin_topics_sort: starred
-          plugin_topics_limit: 50
+          plugin_topics_limit: 0
           plugin_languages: yes
           plugin_languages_limit: 8
           plugin_languages_sections: most-used
@@ -62,7 +62,7 @@ jobs:
           plugin_topics: yes
           plugin_topics_mode: icons
           plugin_topics_sort: starred
-          plugin_topics_limit: 50
+          plugin_topics_limit: 0
           plugin_languages: yes
           plugin_languages_limit: 8
           plugin_languages_sections: most-used

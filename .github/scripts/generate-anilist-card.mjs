@@ -3,9 +3,10 @@
 const USER = process.env.ANILIST_USER || "ShiningMonster";
 const OUT_FILE = process.env.ANILIST_SVG || "github-metrics-anilist.svg";
 
-const FAVORITES = [
+const ANIME_FAVORITES = [
   {
     title: "Sousou no Frieren",
+    medium: "Anime",
     year: "2023",
     approval: "91%",
     episodes: "28 episodes",
@@ -17,6 +18,7 @@ const FAVORITES = [
   },
   {
     title: "serial experiments lain",
+    medium: "Anime",
     year: "1998",
     approval: "83%",
     episodes: "13 episodes",
@@ -26,11 +28,88 @@ const FAVORITES = [
     cover: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx339-xF2wp1NQuQ4r.png",
     accent: "#60a5fa",
   },
+  {
+    title: "Dandadan 3rd Season",
+    medium: "Anime",
+    year: "2027",
+    approval: "TBA",
+    episodes: "TV",
+    genres: "Action, Comedy, Supernatural",
+    description: "The third season of Dandadan.",
+    cover: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx198966-9Ji1GwIyRiiu.jpg",
+    accent: "#f97316",
+  },
+  {
+    title: "Bubblegum Crisis TOKYO 2040",
+    medium: "Anime",
+    year: "1998",
+    approval: "71%",
+    episodes: "26 episodes",
+    genres: "Action, Mecha, Sci-Fi",
+    description:
+      "After an earthquake levels Tokyo, Genom's Boomers help rebuild the city until some run amok. Lina Yamazaki heads to Tokyo hoping to join the Knight Sabers and stop the rogue Boomers.",
+    cover: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx568-XvVqG7WdO1jo.jpg",
+    accent: "#f472b6",
+  },
 ];
 
-const W = 760;
+const MANGA_FAVORITES = [
+  {
+    title: "Dandadan",
+    medium: "Manga",
+    year: "2021",
+    approval: "82%",
+    episodes: "Releasing",
+    genres: "Action, Comedy, Supernatural",
+    description:
+      "Momo Ayase and Okarun set out to prove each other wrong about ghosts and aliens, only to get pulled into a wildly strange, funny, and emotional supernatural mess.",
+    cover: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx132029-prGF4gePdSKv.jpg",
+    accent: "#22c55e",
+  },
+  {
+    title: "Berserk",
+    medium: "Manga",
+    year: "1989",
+    approval: "92%",
+    episodes: "Releasing",
+    genres: "Action, Adventure, Drama, Fantasy",
+    description:
+      "Guts, the Black Swordsman, bears a brutal fate and cuts a path through darkness, sacrifice, and vengeance in one of manga's most relentless epics.",
+    cover: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30002-Cul4OeN7bYtn.jpg",
+    accent: "#eab308",
+  },
+  {
+    title: "X",
+    medium: "Manga",
+    year: "1992",
+    approval: "79%",
+    episodes: "Hiatus",
+    genres: "Action, Drama, Fantasy, Supernatural",
+    description:
+      "Kamui Shiro was born with the power to decide the fate of Earth, and must choose between those fated to protect it and those destined to destroy it.",
+    cover: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30027-UBGLYGgWKzTT.jpg",
+    accent: "#a78bfa",
+  },
+  {
+    title: "Tokyo BABYLON",
+    medium: "Manga",
+    year: "1990",
+    approval: "76%",
+    episodes: "18 chapters",
+    genres: "Drama, Mystery, Supernatural",
+    description:
+      "In the last days of Japan's bubble economy, Subaru Sumeragi confronts the darkness beneath Tokyo as occult cases spiral into a tragic, elegant love story.",
+    cover: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30133-sR52jjzieDTp.png",
+    accent: "#fb7185",
+  },
+];
+
+const W = 500;
 const PAD = 18;
 const HEADER_H = 52;
+const COL_GAP = 14;
+const COL_W = Math.floor((W - PAD * 2 - COL_GAP) / 2);
+const CARD_H = 88;
 
 function truncate(text, max) {
   if (text.length <= max) return text;
@@ -58,7 +137,7 @@ function wrapText(text, maxChars, maxLines) {
     return lines.slice(0, maxLines);
   }
   if (words.join(" ").length > lines.join(" ").length && lines.length) {
-    lines[lines.length - 1] = truncate(lines[lines.length - 1], Math.max(8, maxChars - 3));
+    lines[lines.length - 1] = truncate(lines[lines.length - 1], maxChars);
   }
   return lines;
 }
@@ -78,23 +157,23 @@ async function imageToDataUri(url) {
 }
 
 function renderFavorite(x, y, favorite) {
-  const descriptionLines = wrapText(favorite.description, 62, 2);
-  let section = `\n  <rect x="${x}" y="${y}" width="${W - PAD * 2}" height="118" rx="14" fill="#131c2b" stroke="#1f2b42"/>`;
-  section += `\n  <rect x="${x + 12}" y="${y + 12}" width="54" height="82" rx="8" fill="#0b1220"/>`;
-  section += `\n  <image href="${favorite.coverData}" x="${x + 12}" y="${y + 12}" width="54" height="82" preserveAspectRatio="xMidYMid slice"/>`;
-  section += `\n  <text x="${x + 80}" y="${y + 26}" font-size="15" font-weight="700" fill="${favorite.accent}">${esc(favorite.title)}</text>`;
-  section += `\n  <text x="${x + 80}" y="${y + 44}" font-size="11" fill="#cbd5e1">Anime</text>`;
-  section += `\n  <text x="${x + 126}" y="${y + 44}" font-size="11" fill="#64748b">${esc(favorite.year)}</text>`;
-  section += `\n  <text x="${x + 168}" y="${y + 44}" font-size="11" fill="#94a3b8">${esc(favorite.approval)}</text>`;
-  section += `\n  <text x="${x + 222}" y="${y + 44}" font-size="11" fill="#94a3b8">${esc(favorite.episodes)}</text>`;
-  section += `\n  <text x="${x + 80}" y="${y + 62}" font-size="11" fill="#94a3b8">${esc(favorite.genres)}</text>`;
-  section += `\n  <text x="${x + 80}" y="${y + 82}" font-size="10.5" fill="#e2e8f0">${esc(descriptionLines[0] || "")}</text>`;
-  section += `\n  <text x="${x + 80}" y="${y + 98}" font-size="10.5" fill="#94a3b8">${esc(descriptionLines[1] || "")}</text>`;
+  const descriptionLines = wrapText(favorite.description, 28, 2);
+  let section = `\n  <rect x="${x}" y="${y}" width="${COL_W}" height="${CARD_H}" rx="12" fill="#131c2b" stroke="#1f2b42"/>`;
+  section += `\n  <rect x="${x + 10}" y="${y + 10}" width="40" height="58" rx="7" fill="#0b1220"/>`;
+  section += `\n  <image href="${favorite.coverData}" x="${x + 10}" y="${y + 10}" width="40" height="58" preserveAspectRatio="xMidYMid slice"/>`;
+  section += `\n  <text x="${x + 58}" y="${y + 22}" font-size="11.5" font-weight="700" fill="${favorite.accent}">${esc(truncate(favorite.title, 24))}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 36}" font-size="9.5" fill="#cbd5e1">${esc(favorite.medium)}</text>`;
+  section += `\n  <text x="${x + 95}" y="${y + 36}" font-size="9.5" fill="#64748b">${esc(favorite.year)}</text>`;
+  section += `\n  <text x="${x + 124}" y="${y + 36}" font-size="9.5" fill="#94a3b8">${esc(favorite.approval)}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 49}" font-size="9.5" fill="#94a3b8">${esc(truncate(favorite.episodes, 15))}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 62}" font-size="9" fill="#94a3b8">${esc(truncate(favorite.genres, 29))}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 75}" font-size="8.8" fill="#e2e8f0">${esc(descriptionLines[0] || "")}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 85}" font-size="8.8" fill="#94a3b8">${esc(descriptionLines[1] || "")}</text>`;
   return section;
 }
 
-function generateSvg(favorites) {
-  const H = 332;
+function generateSvg(animeFavorites, mangaFavorites) {
+  const H = 452;
   let out = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="AniList favorites showcase">
   <defs>
@@ -106,23 +185,35 @@ function generateSvg(favorites) {
   <rect width="${W}" height="${H}" rx="16" fill="url(#panel)"/>
   <text x="${PAD}" y="32" font-size="18" font-weight="700" fill="#e2e8f0">AniList</text>
   <text x="${PAD}" y="52" font-size="11" fill="#60a5fa">@${esc(USER)}</text>
-  <text x="${PAD}" y="84" font-size="17" font-weight="700" fill="#60a5fa">Favorite anime</text>`;
+  <text x="${PAD}" y="82" font-size="13" font-weight="700" fill="#60a5fa">Favorite anime</text>
+  <text x="${PAD + COL_W + COL_GAP}" y="82" font-size="13" font-weight="700" fill="#f472b6">Favorite manga</text>`;
 
-  out += renderFavorite(PAD, 100, favorites[0]);
-  out += renderFavorite(PAD, 226, favorites[1]);
+  for (let i = 0; i < animeFavorites.length; i += 1) {
+    out += renderFavorite(PAD, 96 + i * 86, animeFavorites[i]);
+  }
+  for (let i = 0; i < mangaFavorites.length; i += 1) {
+    out += renderFavorite(PAD + COL_W + COL_GAP, 96 + i * 86, mangaFavorites[i]);
+  }
   out += "\n</svg>";
   return out;
 }
 
 async function main() {
-  const favorites = [];
-  for (const favorite of FAVORITES) {
-    favorites.push({
+  const animeFavorites = [];
+  for (const favorite of ANIME_FAVORITES) {
+    animeFavorites.push({
       ...favorite,
       coverData: await imageToDataUri(favorite.cover),
     });
   }
-  const svg = generateSvg(favorites);
+  const mangaFavorites = [];
+  for (const favorite of MANGA_FAVORITES) {
+    mangaFavorites.push({
+      ...favorite,
+      coverData: await imageToDataUri(favorite.cover),
+    });
+  }
+  const svg = generateSvg(animeFavorites, mangaFavorites);
   await fs.writeFile(OUT_FILE, `${svg}\n`, "utf8");
   console.log(`AniList card written: ${OUT_FILE}`);
 }
