@@ -112,23 +112,46 @@ const COL_W = Math.floor((W - PAD * 2 - COL_GAP) / 2);
 const CARD_H = 132;
 
 function truncate(text, max) {
-  if (text.length <= max) return text;
-  return `${text.slice(0, max - 1)}...`;
+  const clean = `${text || ""}`.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const sliced = clean.slice(0, Math.max(1, max - 3));
+  const cut = sliced.lastIndexOf(" ");
+  const safe = cut > Math.floor(max * 0.45) ? sliced.slice(0, cut) : sliced;
+  return `${safe.trimEnd()}...`;
 }
 
 function descriptionLinesWithEllipsis(text, firstMax, secondMax) {
   const clean = `${text || ""}`.replace(/\s+/g, " ").trim();
   if (!clean) return ["", ""];
+  const words = clean.split(" ");
 
-  const first = clean.slice(0, firstMax).trimEnd();
-  const remaining = clean.slice(first.length).trimStart();
-  if (!remaining) return [first, ""];
+  const fillLine = (maxChars, sourceWords) => {
+    let line = "";
+    let idx = 0;
+    while (idx < sourceWords.length) {
+      const next = line ? `${line} ${sourceWords[idx]}` : sourceWords[idx];
+      if (next.length > maxChars) break;
+      line = next;
+      idx += 1;
+    }
+    if (!line && sourceWords.length) {
+      line = sourceWords[0].slice(0, Math.max(1, maxChars));
+      idx = 1;
+    }
+    return { line: line.trim(), consumed: idx };
+  };
 
-  if (remaining.length <= secondMax) {
-    return [first, remaining];
+  const first = fillLine(firstMax, words);
+  const remainingWords = words.slice(first.consumed);
+  if (!remainingWords.length) return [first.line, ""];
+
+  const second = fillLine(secondMax, remainingWords);
+  const stillRemaining = remainingWords.slice(second.consumed).length > 0;
+  let secondLine = second.line;
+  if (stillRemaining) {
+    secondLine = secondLine.length + 3 <= secondMax ? `${secondLine}...` : truncate(secondLine, secondMax);
   }
-
-  return [first, `${remaining.slice(0, Math.max(0, secondMax - 3)).trimEnd()}...`];
+  return [first.line, secondLine];
 }
 
 function esc(t) {
@@ -146,16 +169,24 @@ async function imageToDataUri(url) {
 }
 
 function renderFavorite(x, y, favorite) {
-  const descriptionLines = descriptionLinesWithEllipsis(favorite.description, 24, 24);
-  const compactMeta = truncate(
-    `${favorite.medium} · ${favorite.year} · ${favorite.approval} · ${favorite.episodes.replace(" episodes", " ep")}`,
-    28,
+  const isRightColumn = x > PAD;
+  const titleLimit = isRightColumn ? 15 : 17;
+  const metaLimit = isRightColumn ? 25 : 28;
+  const genresLimit = isRightColumn ? 21 : 26;
+  const descriptionLines = descriptionLinesWithEllipsis(
+    favorite.description,
+    isRightColumn ? 20 : 24,
+    isRightColumn ? 20 : 24,
   );
-  const compactGenres = truncate(favorite.genres, 26);
+  const compactMeta = truncate(
+    `${favorite.medium} - ${favorite.year} - ${favorite.approval} - ${favorite.episodes.replace(" episodes", " ep")}`,
+    metaLimit,
+  );
+  const compactGenres = truncate(favorite.genres, genresLimit);
   let section = `\n  <rect x="${x}" y="${y}" width="${COL_W}" height="${CARD_H}" rx="12" fill="#131c2b" stroke="#1f2b42"/>`;
   section += `\n  <rect x="${x + 10}" y="${y + 10}" width="58" height="86" rx="7" fill="#0b1220"/>`;
   section += `\n  <image href="${favorite.coverData}" x="${x + 10}" y="${y + 10}" width="58" height="86" preserveAspectRatio="xMidYMid slice"/>`;
-  section += `\n  <text x="${x + 74}" y="${y + 28}" font-size="16.5" font-weight="700" fill="${favorite.accent}">${esc(truncate(favorite.title, 17))}</text>`;
+  section += `\n  <text x="${x + 74}" y="${y + 28}" font-size="16.5" font-weight="700" fill="${favorite.accent}">${esc(truncate(favorite.title, titleLimit))}</text>`;
   section += `\n  <text x="${x + 74}" y="${y + 47}" font-size="12.6" fill="#cbd5e1">${esc(compactMeta)}</text>`;
   section += `\n  <text x="${x + 74}" y="${y + 65}" font-size="12.2" fill="#94a3b8">${esc(compactGenres)}</text>`;
   section += `\n  <text x="${x + 74}" y="${y + 86}" font-size="12" fill="#e2e8f0">${esc(descriptionLines[0] || "")}</text>`;
