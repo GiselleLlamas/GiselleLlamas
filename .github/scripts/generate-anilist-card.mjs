@@ -109,7 +109,7 @@ const PAD = 18;
 const HEADER_H = 52;
 const COL_GAP = 14;
 const COL_W = Math.floor((W - PAD * 2 - COL_GAP) / 2);
-const CARD_H = 88;
+const CARD_H = 96;
 
 function truncate(text, max) {
   if (text.length <= max) return text;
@@ -157,23 +157,23 @@ async function imageToDataUri(url) {
 }
 
 function renderFavorite(x, y, favorite) {
-  const descriptionLines = wrapText(favorite.description, 28, 2);
+  const descriptionLines = wrapText(favorite.description, 24, 2);
   let section = `\n  <rect x="${x}" y="${y}" width="${COL_W}" height="${CARD_H}" rx="12" fill="#131c2b" stroke="#1f2b42"/>`;
   section += `\n  <rect x="${x + 10}" y="${y + 10}" width="40" height="58" rx="7" fill="#0b1220"/>`;
   section += `\n  <image href="${favorite.coverData}" x="${x + 10}" y="${y + 10}" width="40" height="58" preserveAspectRatio="xMidYMid slice"/>`;
-  section += `\n  <text x="${x + 58}" y="${y + 22}" font-size="11.5" font-weight="700" fill="${favorite.accent}">${esc(truncate(favorite.title, 24))}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 36}" font-size="9.5" fill="#cbd5e1">${esc(favorite.medium)}</text>`;
-  section += `\n  <text x="${x + 95}" y="${y + 36}" font-size="9.5" fill="#64748b">${esc(favorite.year)}</text>`;
-  section += `\n  <text x="${x + 124}" y="${y + 36}" font-size="9.5" fill="#94a3b8">${esc(favorite.approval)}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 49}" font-size="9.5" fill="#94a3b8">${esc(truncate(favorite.episodes, 15))}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 62}" font-size="9" fill="#94a3b8">${esc(truncate(favorite.genres, 29))}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 75}" font-size="8.8" fill="#e2e8f0">${esc(descriptionLines[0] || "")}</text>`;
-  section += `\n  <text x="${x + 58}" y="${y + 85}" font-size="8.8" fill="#94a3b8">${esc(descriptionLines[1] || "")}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 24}" font-size="13.5" font-weight="700" fill="${favorite.accent}">${esc(truncate(favorite.title, 20))}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 41}" font-size="11.5" fill="#cbd5e1">${esc(favorite.medium)}</text>`;
+  section += `\n  <text x="${x + 102}" y="${y + 41}" font-size="11.5" fill="#64748b">${esc(favorite.year)}</text>`;
+  section += `\n  <text x="${x + 135}" y="${y + 41}" font-size="11.5" fill="#94a3b8">${esc(favorite.approval)}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 56}" font-size="11.5" fill="#94a3b8">${esc(truncate(favorite.episodes, 13))}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 70}" font-size="11" fill="#94a3b8">${esc(truncate(favorite.genres, 22))}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 84}" font-size="10.8" fill="#e2e8f0">${esc(descriptionLines[0] || "")}</text>`;
+  section += `\n  <text x="${x + 58}" y="${y + 94}" font-size="10.8" fill="#94a3b8">${esc(descriptionLines[1] || "")}</text>`;
   return section;
 }
 
 function generateSvg(animeFavorites, mangaFavorites) {
-  const H = 452;
+  const H = 554;
   let out = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="AniList favorites showcase">
   <defs>
@@ -183,16 +183,16 @@ function generateSvg(animeFavorites, mangaFavorites) {
     </linearGradient>
   </defs>
   <rect width="${W}" height="${H}" rx="16" fill="url(#panel)"/>
-  <text x="${PAD}" y="32" font-size="18" font-weight="700" fill="#e2e8f0">AniList</text>
-  <text x="${PAD}" y="52" font-size="11" fill="#60a5fa">@${esc(USER)}</text>
-  <text x="${PAD}" y="82" font-size="13" font-weight="700" fill="#60a5fa">Favorite anime</text>
-  <text x="${PAD + COL_W + COL_GAP}" y="82" font-size="13" font-weight="700" fill="#f472b6">Favorite manga</text>`;
+  <text x="${PAD}" y="34" font-size="20" font-weight="700" fill="#e2e8f0">AniList</text>
+  <text x="${PAD}" y="55" font-size="13" fill="#60a5fa">@${esc(USER)}</text>
+  <text x="${PAD}" y="88" font-size="15" font-weight="700" fill="#60a5fa">Favorite anime</text>
+  <text x="${PAD + COL_W + COL_GAP}" y="88" font-size="15" font-weight="700" fill="#f472b6">Favorite manga</text>`;
 
   for (let i = 0; i < animeFavorites.length; i += 1) {
-    out += renderFavorite(PAD, 96 + i * 86, animeFavorites[i]);
+    out += renderFavorite(PAD, 104 + i * 108, animeFavorites[i]);
   }
   for (let i = 0; i < mangaFavorites.length; i += 1) {
-    out += renderFavorite(PAD + COL_W + COL_GAP, 96 + i * 86, mangaFavorites[i]);
+    out += renderFavorite(PAD + COL_W + COL_GAP, 104 + i * 108, mangaFavorites[i]);
   }
   out += "\n</svg>";
   return out;

@@ -20,12 +20,10 @@ I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Pl
       <a href="https://github.com/GiselleLlamas#" target="_self" rel="noopener">
         <img src="/github-metrics-anilist.svg" alt="AniList showcase" width="100%" />
       </a>
+      <br />
+      <a href="https://github.com/GiselleLlamas#" target="_self" rel="noopener">
+        <img src="/github-metrics-16personalities.svg" alt="16Personalities showcase" width="100%" />
+      </a>
     </td>
   </tr>
 </table>
-
-<p align="center">
-  <a href="https://github.com/GiselleLlamas#" target="_self" rel="noopener">
-    <img src="/github-metrics-16personalities.svg" alt="16Personalities showcase" width="72%" />
-  </a>
-</p>
