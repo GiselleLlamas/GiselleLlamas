@@ -4,7 +4,6 @@ I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Pl
 
 *   🌍  I'm based in Canada/Argentina
 *   🖥️  My personal Dev/QA CV website [in Spanish](https://gisellellamas.dev/)
-*   🚀  I'm currently working on [Little Big Pad (Avatar Studio)](http://www.littlebigpad.app/)
 *   🧠  I'm currently learning Python, 3D and Shaders
 
 ----
