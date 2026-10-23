@@ -1,6 +1,6 @@
 ## Hi there! :wave: My name is Giselle Llamas, I'm a Multimedia & Interactive Developer / QA from Argentina
 
-I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Playwright. I also work as an Interactive Developer focusing on Web and C++/OpenFrameworks/P5JS. I'm a EU Citizen/Canada PR.
+I'm a Sr QA with 10+ yrs exp in Web, Games and Apps. Creating tooling with JS+Playwright. I also work as an Interactive Developer focusing on Web and C++/OpenFrameworks/P5JS.
 
 *   🌍  I'm based in Canada/Argentina
 *   🖥️  My personal Dev/QA CV website [in Spanish](https://gisellellamas.dev/)
